@@ -63,6 +63,15 @@
         "stop_token": "cpp",
         "streambuf": "cpp",
         "thread": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "generator": "cpp",
+        "charconv": "cpp",
+        "coroutine": "cpp",
+        "optional": "cpp",
+        "format": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "variant": "cpp",
+        "text_encoding": "cpp"
     }
 }
