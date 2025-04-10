@@ -97,7 +97,7 @@ BENCHMARK_DEFINE_F(PrimeNumberGeneratorBenchmark, Basic)(benchmark::State& state
 BENCHMARK_REGISTER_F(PrimeNumberGeneratorBenchmark, Basic)
     ->Unit(benchmark::kMillisecond)
     ->ArgsProduct({
-        benchmark::CreateRange(10, 100'000, /*multiplier=*/10) // Number of prime numbers to generate
+        benchmark::CreateRange(1 << 10, 1 << 15, /*multiplier=*/2) // Number of prime numbers to generate
     });
 
 BENCHMARK_DEFINE_F(PrimeNumberGeneratorBenchmark, SieveOfEratosthenes)(benchmark::State& state)
@@ -115,7 +115,7 @@ BENCHMARK_DEFINE_F(PrimeNumberGeneratorBenchmark, SieveOfEratosthenes)(benchmark
 BENCHMARK_REGISTER_F(PrimeNumberGeneratorBenchmark, SieveOfEratosthenes)
     ->Unit(benchmark::kMillisecond)
     ->ArgsProduct({
-        benchmark::CreateRange(10, 1'000'000, /*multiplier=*/10) // Number of prime numbers to generate
+        benchmark::CreateRange(1 << 10, 1 << 21, /*multiplier=*/2) // Number of prime numbers to generate
     });
 
 BENCHMARK_MAIN();
