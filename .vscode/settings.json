@@ -72,6 +72,10 @@
         "ranges": "cpp",
         "span": "cpp",
         "variant": "cpp",
-        "text_encoding": "cpp"
+        "text_encoding": "cpp",
+        "cassert": "cpp",
+        "any": "cpp",
+        "forward_list": "cpp",
+        "unordered_set": "cpp"
     }
 }
