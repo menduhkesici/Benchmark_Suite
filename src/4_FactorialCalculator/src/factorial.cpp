@@ -22,16 +22,19 @@ constexpr std::int64_t max_allowed_input = std::numeric_limits<std::uint64_t>::m
 
 std::string factorial(std::int64_t n)
 {
-    assert(n <= max_allowed_input);
+    if (n > max_allowed_input)
+    {
+        throw std::runtime_error("The input exceeds the maximum allowed input!");
+    }
 
     std::vector<std::uint64_t> result_vec(1, 1);
     for (std::int64_t i = 2; i <= n; i++)
     {
         std::uint64_t carry = 0;
-        for (int j = 0; j < result_vec.size(); j++)
+        for (auto& result_vec_item : result_vec)
         {
-            std::uint64_t tmp_result = result_vec[j] * i + carry;
-            result_vec[j] = tmp_result % max_element_per_vector_element;
+            std::uint64_t tmp_result = result_vec_item * i + carry;
+            result_vec_item = tmp_result % max_element_per_vector_element;
             carry = tmp_result / max_element_per_vector_element;
         }
         while (carry > 0)
@@ -43,9 +46,9 @@ std::string factorial(std::int64_t n)
 
     std::ostringstream ostream;
     ostream << result_vec.back();
-    for (int i = result_vec.size() - 2; i >= 0; i--)
+    for (auto it = std::rbegin(result_vec) + 1; it != std::rend(result_vec); ++it)
     {
-        ostream << std::setw(digits_per_vector_element) << std::setfill('0') << result_vec[i];
+        ostream << std::setw(digits_per_vector_element) << std::setfill('0') << *it;
     }
 
     return ostream.str();

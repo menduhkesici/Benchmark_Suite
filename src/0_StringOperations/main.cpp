@@ -3,11 +3,11 @@
 class StringOperations : public benchmark::Fixture
 {
 public:
-    void SetUp(::benchmark::State& state)
+    void SetUp(::benchmark::State&)
     {
     }
 
-    void TearDown(::benchmark::State& state)
+    void TearDown(::benchmark::State&)
     {
     }
 };

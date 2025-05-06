@@ -204,21 +204,21 @@ private:
 class SudokuSolverTest : public benchmark::Fixture
 {
 public:
-    void SetUp(::benchmark::State& state)
+    void SetUp(::benchmark::State&)
     {
     }
 
-    void TearDown(::benchmark::State& state)
+    void TearDown(::benchmark::State&)
     {
     }
 
     template <int SudokuDimension>
     inline static void Run(benchmark::State& state, const SudokuMap<SudokuDimension>& inputSudokuMap)
     {
-        const int numOfThreads = state.range(0);
+        const int numOfThreads = static_cast<int>(state.range(0));
         omp_set_num_threads(numOfThreads);
 
-        const int maxParallelizationDepth = state.range(1);
+        const int maxParallelizationDepth = static_cast<int>(state.range(1));
         const auto sudokuSolver = SudokuSolver(maxParallelizationDepth);
 
         for (auto _ : state)
