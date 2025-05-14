@@ -17,18 +17,18 @@ public:
     }
 
 private:
-    const size_t width_;
-    const size_t height_;
+    size_t width_;
+    size_t height_;
 };
 
 class MatrixOperations : public benchmark::Fixture
 {
 public:
-    void SetUp(::benchmark::State&)
+    void SetUp(::benchmark::State&) override
     {
     }
 
-    void TearDown(::benchmark::State&)
+    void TearDown(::benchmark::State&) override
     {
     }
 

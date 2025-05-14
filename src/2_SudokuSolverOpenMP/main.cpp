@@ -26,14 +26,17 @@ private:
     }
 };
 
-template <int SudokuDimension>
+template <int SudokuSubgridDimension>
 class SudokuMap
 {
 public:
+    static constexpr int SudokuDimension{SudokuSubgridDimension * SudokuSubgridDimension};
+    static constexpr int SudokuNumOfElements{SudokuDimension * SudokuDimension};
+
     SudokuMap(std::vector<int> elements)
         : elements_(std::move(elements))
     {
-        if (elements_.size() != (SudokuDimension * SudokuDimension))
+        if (elements_.size() != SudokuNumOfElements)
         {
             throw std::runtime_error(Utility::argsToString("Number of elements in the sudoku map '", elements_.size(),
                                                            "' does not match the dimension '", SudokuDimension, "'!\n"));
@@ -71,13 +74,12 @@ public:
         }
 
         // Check the subgrid
-        constexpr int subgridSize = std::sqrt(SudokuDimension);
-        int subgridRowStart = (x / subgridSize) * subgridSize;
-        int subgridColStart = (y / subgridSize) * subgridSize;
+        int subgridRowStart = (x / SudokuSubgridDimension) * SudokuSubgridDimension;
+        int subgridColStart = (y / SudokuSubgridDimension) * SudokuSubgridDimension;
 
-        for (int row = subgridRowStart; row < subgridRowStart + subgridSize; row++)
+        for (int row = subgridRowStart; row < subgridRowStart + SudokuSubgridDimension; row++)
         {
-            for (int col = subgridColStart; col < subgridColStart + subgridSize; col++)
+            for (int col = subgridColStart; col < subgridColStart + SudokuSubgridDimension; col++)
             {
                 if (getElem(row, col) == value)
                 {
@@ -117,10 +119,12 @@ public:
     {
     }
 
-    template <int SudokuDimension>
-    std::shared_ptr<SudokuMap<SudokuDimension>> run(SudokuMap<SudokuDimension>& sudoku, int x = 0, int y = 0,
-                                                    int depth = 1) const
+    template <int SudokuSubgridDimension>
+    std::shared_ptr<SudokuMap<SudokuSubgridDimension>> run(SudokuMap<SudokuSubgridDimension>& sudoku, int x = 0, int y = 0,
+                                                           int depth = 1) const
     {
+        static constexpr int SudokuDimension = SudokuMap<SudokuSubgridDimension>::SudokuDimension;
+
         // If x is beyond the last column, move to the next row
         if (x >= SudokuDimension)
         {
@@ -129,7 +133,7 @@ public:
             if (y >= SudokuDimension)
             {
                 // If y is also beyond the last row, the puzzle is solved
-                return std::make_shared<SudokuMap<SudokuDimension>>(sudoku);
+                return std::make_shared<SudokuMap<SudokuSubgridDimension>>(sudoku);
             }
         }
 
@@ -142,7 +146,7 @@ public:
         // Only use OpenMP parallelization until maximum depth to avoid creating too many tasks
         if (depth < maxParallelizationDepth_)
         {
-            std::shared_ptr<SudokuMap<SudokuDimension>> solution;
+            std::shared_ptr<SudokuMap<SudokuSubgridDimension>> solution;
 
 #pragma omp parallel shared(solution)
             {
@@ -198,22 +202,22 @@ public:
     }
 
 private:
-    const int maxParallelizationDepth_{1};
+    int maxParallelizationDepth_{1};
 };
 
 class SudokuSolverTest : public benchmark::Fixture
 {
 public:
-    void SetUp(::benchmark::State&)
+    void SetUp(::benchmark::State&) override
     {
     }
 
-    void TearDown(::benchmark::State&)
+    void TearDown(::benchmark::State&) override
     {
     }
 
-    template <int SudokuDimension>
-    inline static void Run(benchmark::State& state, const SudokuMap<SudokuDimension>& inputSudokuMap)
+    template <int SudokuSubgridDimension>
+    inline static void Run(benchmark::State& state, const SudokuMap<SudokuSubgridDimension>& inputSudokuMap)
     {
         const int numOfThreads = static_cast<int>(state.range(0));
         omp_set_num_threads(numOfThreads);
@@ -236,7 +240,7 @@ public:
 
 BENCHMARK_DEFINE_F(SudokuSolverTest, NullDifficulty)(benchmark::State& state)
 {
-    const auto sudokuMapComplete_ = SudokuMap<16>({
+    const auto sudokuMapComplete_ = SudokuMap<4>({
         3,  7,  6,  8,  5,  14, 10, 9,  13, 2,  1,  15, 11, 12, 16, 4,  //
         13, 16, 15, 10, 12, 11, 1,  2,  7,  9,  14, 4,  8,  6,  5,  3,  //
         12, 4,  14, 9,  13, 3,  6,  16, 8,  10, 5,  11, 1,  15, 2,  7,  //
@@ -265,7 +269,7 @@ BENCHMARK_REGISTER_F(SudokuSolverTest, NullDifficulty)
 
 BENCHMARK_DEFINE_F(SudokuSolverTest, EasyDifficulty)(benchmark::State& state)
 {
-    const auto sudokuMapEasy_ = SudokuMap<16>({
+    const auto sudokuMapEasy_ = SudokuMap<4>({
         0,  0,  6,  0,  0,  14, 10, 00, 13, 2,  0,  15, 0,  0,  0,  4,  //
         0,  16, 15, 0,  12, 0,  0,  2,  7,  9,  0,  4,  0,  0,  5,  3,  //
         12, 0,  14, 0,  13, 3,  6,  0,  0,  0,  5,  0,  1,  0,  0,  0,  //

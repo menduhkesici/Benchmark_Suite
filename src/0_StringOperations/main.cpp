@@ -3,11 +3,11 @@
 class StringOperations : public benchmark::Fixture
 {
 public:
-    void SetUp(::benchmark::State&)
+    void SetUp(::benchmark::State&) override
     {
     }
 
-    void TearDown(::benchmark::State&)
+    void TearDown(::benchmark::State&) override
     {
     }
 };
@@ -24,6 +24,7 @@ BENCHMARK_F(StringOperations, EmptyStringCreate)(benchmark::State& state)
 BENCHMARK_F(StringOperations, ShortStringCopy)(benchmark::State& state)
 {
     const auto shortString = std::string("Hello world!");
+
     for (auto _ : state)
     {
         auto output = std::string(shortString);
@@ -34,6 +35,7 @@ BENCHMARK_F(StringOperations, ShortStringCopy)(benchmark::State& state)
 BENCHMARK_F(StringOperations, LongStringCopy)(benchmark::State& state)
 {
     const auto longString = std::string(100000, '*');
+
     for (auto _ : state)
     {
         auto output = std::string(longString);
