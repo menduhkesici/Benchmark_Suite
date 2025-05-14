@@ -5,11 +5,11 @@
 class FactorialCalculatorBenchmark : public benchmark::Fixture
 {
 public:
-    void SetUp(::benchmark::State&)
+    void SetUp(::benchmark::State&) override
     {
     }
 
-    void TearDown(::benchmark::State&)
+    void TearDown(::benchmark::State&) override
     {
     }
 };
